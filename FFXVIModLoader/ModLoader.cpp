@@ -47,7 +47,7 @@ std::vector<std::pair<int64_t, std::string>> ModLoader::FindModsAndReadLoadOrder
         {
             fs::path extension = file.path().extension();
             fs::path path = file.path().parent_path();
-            if (extension == ".dll" && path == m_modFolder)
+            if ((extension == ".dll" || extension == ".asi") && path == m_modFolder)
             {
                 std::string modName = file.path().stem().string();
                 int64_t loadOrder = automaticLoadOrder;
@@ -63,14 +63,14 @@ std::vector<std::pair<int64_t, std::string>> ModLoader::FindModsAndReadLoadOrder
 
                 std::string overrideLoadOrder = m_ini["loadorder"].get(modName);
                 if (overrideLoadOrder == "") {
-					overrideLoadOrder = m_ini["loadorder"].get(modName + ".dll");
+					overrideLoadOrder = m_ini["loadorder"].get(modName + extension.string());
                 }
                 if (overrideLoadOrder != "") {
 					loadOrder = std::stoi(overrideLoadOrder);
                 }
 
 				m_logger.Log("%s = %i", modName.c_str(), loadOrder);
-                dllMods.push_back(std::make_pair(loadOrder, modName + ".dll"));
+                dllMods.push_back(std::make_pair(loadOrder, modName + extension.string()));
             }
         }
     }
@@ -95,7 +95,7 @@ void ModLoader::LoadDllMods()
 {
     auto dllMods = FindModsAndReadLoadOrders();
 
-	m_logger.Log("Loading .dll mods...");
+	m_logger.Log("Loading .dll and .asi mods...");
 
 	size_t modCount = 0;
 	bool hasSlept = false;
@@ -124,10 +124,10 @@ void ModLoader::LoadDllMods()
         else
         {
             m_logger.Log("Failed to load %s", dllName.c_str());
-            MessageBox(NULL, std::string("Failed to load " + dllName).c_str(), "Elden Mod Loader", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL);
+            MessageBox(NULL, std::string("Failed to load " + dllName).c_str(), "FFXVI Mod Loader", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL);
         }
     }
-    m_logger.Log("Loaded %i .dll mods", modCount);
+    m_logger.Log("Loaded %i .dll and .asi mods", modCount);
 }
 
 void ModLoader::OpenTerminal()
@@ -135,7 +135,7 @@ void ModLoader::OpenTerminal()
     if (AllocConsole())
     {
         freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
-        SetWindowText(GetConsoleWindow(), "Elden Mod Loader");
+        //SetWindowText(GetConsoleWindow(), "Final Fantasy XVI Mod Loader");
     }
 }
 

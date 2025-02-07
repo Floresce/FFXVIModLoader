@@ -18,7 +18,7 @@ public:
 	void LoadMods();
 
 private:
-	Logger m_logger{ "EldenModLoader" };
+	Logger m_logger{ "FFXVIModLoader" };
 	std::string m_modFolder = ".\\mods";
 	DWORD m_loadDelay = 5000;
 	bool m_showTerminal = false;

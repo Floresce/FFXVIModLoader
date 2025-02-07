@@ -12,7 +12,6 @@
 
 DWORD WINAPI LoaderThread(LPVOID lpParam)
 {
-	LoadLibraryA("psapi.dll"); 
 	ModLoader loader;
 	loader.LoadMods();
 	return S_OK;
